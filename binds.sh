@@ -19,3 +19,6 @@ fzf_session() {
 }
 
 bind -x '"\C-f": fzf_session'
+
+# Alt + C
+bind '"\ec": "\C-ucd $(fd -t d . ~ ~/.config | fzf)\n"'
