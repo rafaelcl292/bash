@@ -4,6 +4,8 @@ fzf_session() {
     [ -z "$dir" ] && return
 
     session=$(basename $dir)
+    # replace . with _
+    session=${session//./_}
 
     # create a new session if it doesn't exist
     if ! tmux has-session -t $session 2>/dev/null; then
@@ -29,3 +31,6 @@ fzf_dir() {
 }
 
 bind '"\ec": "\C-ufzf_dir\n"'
+
+# Ctrl + D
+bind -x '"\C-d": exit'
