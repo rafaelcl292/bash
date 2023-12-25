@@ -17,3 +17,23 @@ alias cls="echo -ne '\033c'"
 alias python=python3
 alias pip=pip3
 alias fd="fdfind"
+alias copilot="gh copilot"
+
+t() {
+    dir=$(pwd)
+    session=$(basename $dir)
+    # replace . with _
+    session=${session//./_}
+
+    # create a new session if it doesn't exist
+    if ! tmux has-session -t $session 2>/dev/null; then
+        tmux new-session -d -s $session -c $dir
+    fi
+
+    # if in tmux
+    if ! tmux info &> /dev/null; then
+        tmux attach-session -t $session
+    else
+        tmux switch-client -t $session
+    fi
+}
