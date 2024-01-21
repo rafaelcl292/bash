@@ -1,8 +1,5 @@
-# Ctrl + F
-fzf_session() {
-    dir=$(fd -t d . ~ ~/.config | fzf)
-    [ -z "$dir" ] && return
-
+_attach_or_new() {
+    dir=$1
     session=$(basename $dir)
     # replace . with _
     session=${session//./_}
@@ -10,6 +7,11 @@ fzf_session() {
     # create a new session if it doesn't exist
     if ! tmux has-session -t $session 2>/dev/null; then
         tmux new-session -d -s $session -c $dir
+
+        # run .tmux.sh if it exists
+        if [ -f "$dir/.tmux.sh" ]; then
+            tmux send-keys -t $session "source $dir/.tmux.sh" Enter
+        fi
     fi
 
     # if in tmux
@@ -18,6 +20,14 @@ fzf_session() {
     else
         tmux switch-client -t $session
     fi
+}
+
+# Ctrl + F
+fzf_session() {
+    dir=$(fd -t d . ~ ~/.config | fzf)
+    [ -z "$dir" ] && return
+
+    _attach_or_new $dir
 }
 
 bind -x '"\C-f": fzf_session'
