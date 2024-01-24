@@ -18,4 +18,5 @@ alias python=python3
 alias pip=pip3
 alias fd=fdfind
 alias copilot="gh copilot"
+alias ??="copilot suggest -t shell"
 alias t="_attach_or_new $(pwd)"

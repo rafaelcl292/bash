@@ -5,7 +5,9 @@ _attach_or_new() {
     session=${session//./_}
 
     # create a new session if it doesn't exist
-    if ! tmux has-session -t $session 2>/dev/null; then
+    sessions=$(tmux list-sessions -F '#S' 2>/dev/null)
+
+    if ! echo "$sessions" | grep -q "^$session$"; then
         tmux new-session -d -s $session -c $dir
 
         # run .tmux.sh if it exists
@@ -15,7 +17,7 @@ _attach_or_new() {
     fi
 
     # if in tmux
-    if ! tmux info &> /dev/null; then
+    if ! tmux info &>/dev/null; then
         tmux attach-session -t $session
     else
         tmux switch-client -t $session
