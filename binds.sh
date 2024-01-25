@@ -46,3 +46,7 @@ bind '"\ec": "\C-ufzf_dir\n"'
 
 # Ctrl + D
 bind -x '"\C-d": exit'
+
+# completion
+bind "set completion-ignore-case on"
+bind '"\C-i": menu-complete'
