@@ -7,7 +7,7 @@ _attach_or_new() {
     # create a new session if it doesn't exist
     sessions=$(tmux list-sessions -F '#S' 2>/dev/null)
 
-    if ! echo "$sessions" | grep -q "^$session$"; then
+    if ! echo "$sessions" | rg -q "^$session$"; then
         tmux new-session -d -s $session -c $dir
 
         # run .tmux.sh if it exists
