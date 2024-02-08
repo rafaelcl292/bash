@@ -42,7 +42,7 @@ fzf_dir() {
     cd $dir
 }
 
-bind '"\ec": "\C-ufzf_dir\n"'
+bind '"\ec": "\C-ufzf_dir\nclear\n"'
 
 # Ctrl + D
 bind -x '"\C-d": exit'
