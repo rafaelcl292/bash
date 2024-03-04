@@ -1,4 +1,6 @@
-export PS1='\[\033[01;36m\]\w\[\033[00m\] \$ '
+PROMPT_COMMAND='if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then PS1_CMD1=" $(git branch 2>/dev/null | grep '"'"'*'"'"' | colrm 1 2)"; else PS1_CMD1=""; fi'
+PS1='[\[\033[36;1m\]\w\[\033[32;1m\]${PS1_CMD1}\[\033[0m\]] \n\$ '
+
 export EDITOR=nvim
 export VISUAL=nvim
 
