@@ -11,3 +11,9 @@ alias copilot="gh copilot"
 alias ??="copilot suggest -t shell"
 alias t="_attach_or_new $(pwd)"
 alias g=lazygit
+
+vssh() {
+    server=$1
+    path=$2
+    v oil-ssh://$server/$path
+}
