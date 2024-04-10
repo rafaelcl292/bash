@@ -36,7 +36,7 @@ bind -x '"\C-f": fzf_session'
 
 # Alt + C
 fzf_dir() {
-    dir=$(fd -t d . ~ ~/.config | fzf)
+    dir=$(fd -t d | fzf)
     [ -z "$dir" ] && return
 
     cd $dir
