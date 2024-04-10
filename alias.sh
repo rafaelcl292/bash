@@ -10,7 +10,9 @@ alias bat=batcat
 alias copilot="gh copilot"
 alias ??="copilot suggest -t shell"
 alias t="_attach_or_new $(pwd)"
-alias g=lazygit
+alias lg=lazygit
+alias g=git
+alias ai=aichat
 
 vssh() {
     server=$1
