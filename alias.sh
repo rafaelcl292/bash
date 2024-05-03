@@ -13,6 +13,7 @@ alias t="_attach_or_new $(pwd)"
 alias lg=lazygit
 alias g=git
 alias ai=aichat
+alias ip="ip -c"
 
 vssh() {
     server=$1
