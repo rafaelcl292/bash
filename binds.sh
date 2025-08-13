@@ -47,6 +47,8 @@ bind '"\ec": "\C-ufzf_dir\nclear\n"'
 # Ctrl + D
 bind -x '"\C-d": exit'
 
+bind -x '"\ee": openai_regenerate_cmd'
+
 # completion
 bind "set completion-ignore-case on"
 bind '"\C-i": menu-complete'
