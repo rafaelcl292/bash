@@ -52,7 +52,7 @@ openai_regenerate_cmd() {
         return
     fi
 
-    if [ -z "$OPENAI_API_KEY" ]; then
+    if [ -z "$CEREBRAS_API_KEY" ]; then
         return
     fi
 
@@ -60,19 +60,28 @@ openai_regenerate_cmd() {
 
 Original input:
 $current_cmd"
-    escaped_prompt=$(printf '%s' "$full_prompt" | jq -Rs .)
 
-    response=$(curl -s https://api.openai.com/v1/responses \
+    system_content=$(printf '%s' "$full_prompt" | jq -Rs .)
+    user_content=$(printf '%s' "$current_cmd" | jq -Rs .)
+
+    response=$(curl -s --location 'https://api.cerebras.ai/v1/chat/completions' \
         -H "Content-Type: application/json" \
-        -H "Authorization: Bearer $OPENAI_API_KEY" \
-        --data-binary "{
-             \"model\": \"gpt-5-mini\",
-             \"input\": $escaped_prompt,
-             \"reasoning\": {\"effort\": \"minimal\"}
-         }")
+        -H "Authorization: Bearer ${CEREBRAS_API_KEY}" \
+        --data "{
+            \"model\": \"gpt-oss-120b\",
+            \"stream\": false,
+            \"max_tokens\": 65536,
+            \"temperature\": 1,
+            \"top_p\": 1,
+            \"reasoning_effort\": \"medium\",
+            \"messages\": [
+                {\"role\": \"system\", \"content\": $system_content},
+                {\"role\": \"user\", \"content\": $user_content}
+            ]
+        }")
 
     if [ $? -eq 0 ]; then
-        new_cmd=$(echo "$response" | jq -r '.output[] | select(.type=="message") | .content[0].text' 2>/dev/null | tr -d '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        new_cmd=$(echo "$response" | jq -r '.choices[0].message.content' 2>/dev/null | tr -d '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
         if [ -n "$new_cmd" ] && [ "$new_cmd" != "null" ]; then
             READLINE_LINE="$new_cmd"
             READLINE_POINT=${#READLINE_LINE}
