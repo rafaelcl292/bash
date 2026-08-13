@@ -3,7 +3,6 @@ alias ls="exa --group-directories-first"
 alias la="exa -a"
 alias l="exa -l --time-style long-iso --group-directories-first"
 alias cls="echo -ne '\033c'"
-alias python=python3.13
 alias pip="uv pip"
 alias fd=fdfind
 alias bat=batcat
