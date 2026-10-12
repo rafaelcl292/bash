@@ -17,7 +17,7 @@ _attach_or_new() {
     fi
 
     # if in tmux
-    if ! tmux info &>/dev/null; then
+    if [ -z "${TMUX:-}" ]; then
         tmux attach-session -t $session
     else
         tmux switch-client -t $session
