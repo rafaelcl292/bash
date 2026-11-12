@@ -47,7 +47,8 @@ EOF
 )
 
 openai_regenerate_cmd() {
-    current_cmd=$(echo "$READLINE_LINE")
+    local current_cmd="$READLINE_LINE"
+    local full_prompt input_text response error_msg new_cmd
     if [ -z "$current_cmd" ]; then
         return
     fi
@@ -81,7 +82,7 @@ $current_cmd"
         }")
 
     if [ $? -eq 0 ]; then
-        new_cmd=$(echo "$response" | jq -r '.choices[0].message.content' 2>/dev/null | tr -d '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        new_cmd=$(printf '%s' "$response" | jq -r '.choices[0].message.content' 2>/dev/null | tr -d '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
         if [ -n "$new_cmd" ] && [ "$new_cmd" != "null" ]; then
             READLINE_LINE="$new_cmd"
             READLINE_POINT=${#READLINE_LINE}

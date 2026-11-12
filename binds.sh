@@ -1,45 +1,51 @@
 _attach_or_new() {
-    dir=$1
-    session=$(basename $dir)
+    local dir=$1
+    local session
+    session=$(basename -- "$dir")
     # replace . with _
     session=${session//./_}
 
     # create a new session if it doesn't exist
+    local sessions
     sessions=$(tmux list-sessions -F '#S' 2>/dev/null)
 
-    if ! echo "$sessions" | rg -q "^$session$"; then
-        tmux new-session -d -s $session -c $dir
+    if ! printf '%s\n' "$sessions" | rg -Fxq -- "$session"; then
+        tmux new-session -d -s "$session" -c "$dir" || return
 
         # run .tmux.sh if it exists
         if [ -f "$dir/.tmux.sh" ]; then
-            tmux send-keys -t $session "source $dir/.tmux.sh" Enter
+            local startup_cmd
+            printf -v startup_cmd 'source %q' "$dir/.tmux.sh"
+            tmux send-keys -t "=$session" "$startup_cmd" Enter
         fi
     fi
 
     # if in tmux
     if [ -z "${TMUX:-}" ]; then
-        tmux attach-session -t $session
+        tmux attach-session -t "=$session"
     else
-        tmux switch-client -t $session
+        tmux switch-client -t "=$session"
     fi
 }
 
 # Ctrl + F
 fzf_session() {
+    local dir
     dir=$(fd -t d . ~ ~/.config | fzf)
     [ -z "$dir" ] && return
 
-    _attach_or_new $dir
+    _attach_or_new "$dir"
 }
 
 bind -x '"\C-f": fzf_session'
 
 # Alt + C
 fzf_dir() {
+    local dir
     dir=$(fd -t d | fzf)
     [ -z "$dir" ] && return
 
-    cd $dir
+    cd -- "$dir"
 }
 
 bind '"\ec": "\C-ufzf_dir\nclear\n"'

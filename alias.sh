@@ -8,13 +8,16 @@ alias fd=fdfind
 alias bat=batcat
 alias copilot="gh copilot"
 alias ??="copilot suggest -t shell"
-alias t="_attach_or_new $(pwd)"
+unalias t 2>/dev/null
+t() {
+    _attach_or_new "$PWD"
+}
 alias lg=lazygit
 alias g=git
 alias ip="ip -c"
 
 vssh() {
-    server=$1
-    path=$2
-    v oil-ssh://$server/$path
+    local server=$1
+    local path=${2-}
+    nvim "oil-ssh://$server/$path"
 }
